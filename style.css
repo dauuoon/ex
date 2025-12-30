@@ -245,8 +245,9 @@ body {
 }
 
 .result-word {
+    font-family: "Anton", sans-serif;
     font-size: 44px; /* 기본 폰트 크기 */
-    font-weight: 900; /* 최대 굵기 */
+    font-weight: 400;
     color: black;
     margin-bottom: 10px;
     line-height: 1.1; /* 행간 약간 축소 */
@@ -262,6 +263,12 @@ body {
 .result-word.right {
     text-align: right;
     padding-right: 4px; /* 마지막 문자 잘림 방지 */
+}
+
+#wordC {
+    -webkit-text-stroke: 1px black;
+    color: white;
+    overflow: visible;
 }
 
 .spacer {
