@@ -11,25 +11,23 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Step 1: Selection -->
-    <div id="step1" class="step active">
+    <!-- Logo Header -->
+    <div id="logoHeader" class="logo-header">
+        <p class="logo-text" onclick="resetToLanding()">LINGUISTIC POLES</p>
+    </div>
+
+    <!-- Landing Page -->
+    <div id="landingPage" class="landing-page">
+        <p class="landing-text">LINGUISTIC POLES</p>
+    </div>
+
+    <!-- Step 1: Pole A -->
+    <div id="step1" class="step">
         <div class="selection-container">
             <div class="wheel-columns">
                 <div class="wheel-wrapper">
-                    <div class="wheel-label">Pole A (Branch)</div>
+                    <div class="wheel-label">pole A</div>
                     <div id="wheelA" class="wheel-swiper swiper">
-                        <div class="swiper-wrapper"></div>
-                    </div>
-                </div>
-                <div class="wheel-wrapper">
-                    <div class="wheel-label">Pole B (Misplacement)</div>
-                    <div id="wheelB" class="wheel-swiper swiper">
-                        <div class="swiper-wrapper"></div>
-                    </div>
-                </div>
-                <div class="wheel-wrapper">
-                    <div class="wheel-label">Pole C (Delay)</div>
-                    <div id="wheelC" class="wheel-swiper swiper">
                         <div class="swiper-wrapper"></div>
                     </div>
                 </div>
@@ -41,20 +39,65 @@
         </div>
     </div>
 
-    <!-- Step 2: Confirmation -->
+    <!-- Step 2: Pole B -->
     <div id="step2" class="step">
-        <div class="footer-fixed">
-            <button class="btn btn-primary" onclick="goToStep3()">생성하기</button>
+        <div class="selection-container">
+            <div class="wheel-columns">
+                <div class="wheel-wrapper">
+                    <div class="wheel-label">pole B</div>
+                    <div id="wheelB" class="wheel-swiper swiper">
+                        <div class="swiper-wrapper"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="button-group footer-fixed">
+            <button class="btn" onclick="goToStep1()">이전으로</button>
+            <button class="btn btn-primary" onclick="goToStep3()">다음으로</button>
         </div>
     </div>
 
-    <!-- Step 3: Result -->
+    <!-- Step 3: Pole C -->
     <div id="step3" class="step">
-        <div id="resultContainer" class="result-container">
+        <div class="selection-container">
+            <div class="wheel-columns">
+                <div class="wheel-wrapper">
+                    <div class="wheel-label">pole C</div>
+                    <div id="wheelC" class="wheel-swiper swiper">
+                        <div class="swiper-wrapper"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="button-group footer-fixed">
+            <button class="btn" onclick="goToStep2()">이전으로</button>
+            <button class="btn btn-primary" onclick="goToStep4()">생성하기</button>
+        </div>
+    </div>
+
+    <!-- Step 4: Result -->
+    <div id="step4" class="step">
+        <div id="loadingState" style="text-align: center;">
+            <p style="font-size: 16px; line-height: 1.6; color: black; margin-bottom: 30px;">
+                <span style="font-weight: 600;">모든 시점은 부분적이고,<br>어느 하나의 해석도 완결되지 않습니다.</span><br>
+                <span style="font-size: 14px; font-weight: 100; color: #555; display: block; margin-top: 12px;">All perspectives are partial.<br>No single interpretation is ever complete.</span>
+            </p>
+            <div style="margin-top: 30px;">
+                <div style="width: 100%; max-width: 120px; height: 4px; background-color: #e0e0e0; margin: 0 auto; border-radius: 2px; overflow: hidden;">
+                    <div id="loadingBar" style="height: 100%; background-color: black; width: 0%; transition: width 0.03s linear;"></div>
+                </div>
+                <p style="font-size: 11px; color: #888; margin-top: 10px; margin-bottom: 0;">이미지 생성중</p>
+            </div>
+        </div>
+
+        <div id="resultContainer" class="result-container" style="display: none;">
             <div class="result-word left" id="wordA"></div>
             <div class="result-word left" id="wordB"></div>
             <div class="spacer"></div>
             <div class="result-word right" id="wordC"></div>
+            <div class="result-logo">LINGUISTIC POLES</div>
         </div>
 
         <div class="button-group footer-fixed">

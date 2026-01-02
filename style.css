@@ -15,17 +15,100 @@ body {
     padding: 20px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    position: relative;
 }
 
-.step {
-    display: none;
+/* Landing Page */
+/* Landing Page */
+.landing-page {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    max-width: 500px;
-    margin: 0 auto;
+    height: 100%;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.8s ease-in-out, visibility 0.8s ease-in-out;
+}
+
+.landing-page.fade-out {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.landing-text {
+    font-family: "Anton", sans-serif;
+    font-size: 42px;
+    font-weight: 400;
+    color: black;
+    margin: 0;
+    text-align: center;
+    position: relative;
+    top: -120px;
+    white-space: nowrap;
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        visibility: visible;
+    }
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+.landing-page.fade-out {
+    animation: fadeOut 0.8s ease-in-out forwards;
+}
+
+.logo-header {
+    position: fixed;
+    top: 15px;
+    left: 0;
+    right: 0;
+    width: 100%;
+    text-align: center;
+    z-index: 100;
+    display: none;
+}
+
+.logo-header.show {
+    display: block;
+}
+
+.logo-text {
+    font-family: "Anton", sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+    color: black;
+    margin: 0;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.logo-text:hover {
+    opacity: 0.6;
+}
+
+/* Step 페이지 - 콘텐츠 영역 */
+.step {
+    position: absolute;
+    width: 100%;
+    opacity: 0;
+    transition: opacity 0.6s ease-in-out;
+    pointer-events: none;
 }
 
 .step.active {
-    display: block;
+    opacity: 1;
+    pointer-events: auto;
 }
 
 /* Popup Styles */
@@ -39,7 +122,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
+    z-index: 2001;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.5s ease, visibility 0.5s ease;
@@ -67,7 +150,7 @@ body {
 }
 
 .popup-container p {
-    font-size: 16px;
+    font-size: 20px;
     line-height: 1.6;
     color: black;
     margin: 0;
@@ -83,8 +166,26 @@ body {
     margin: 0; /* 팝업 버튼의 좌우/하단 여백 제거 */
 }
 
+.popup-actions .btn-primary {
+    background-color: white;
+    color: black;
+    border-color: black;
+    width: 50%;
+    margin: 0 auto;
+    padding: 10px 30px;
+}
+
+.popup-actions .btn-primary:hover {
+    background-color: #f5f5f5;
+    color: black;
+}
+
 .selection-container {
     margin-bottom: 40px;
+    width: 100%;
+    max-width: 320px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .wheel-columns {
@@ -99,16 +200,16 @@ body {
 }
 
 .wheel-label {
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 8px;
+    font-family: "Anton", sans-serif;
+    font-size: 16px;
+    margin-bottom: 30px;
     text-align: center;
-    color: #888;
+    color: black;
 }
 
 .wheel-swiper {
     position: relative;
-    height: 90px; /* 더 컴팩트한 휠 높이 */
+    height: 120px; /* 더 컴팩트한 휠 높이 */
     border: 2px solid black;
     background: white;
     overflow: hidden;
@@ -126,15 +227,16 @@ body {
     align-items: center;
     justify-content: center;
     height: 40px; /* 중앙은 꽉 차고 위아래는 살짝 보이도록 높이 조정 */
+    font-family: "Anton", sans-serif;
     font-size: 24px; /* 폰트 크기 확대 */
-    font-weight: 800;
+    font-weight: 400;
     color: #888; /* 기본은 그레이 */
 }
 
 .wheel-swiper .swiper-slide-active,
 .wheel-swiper .swiper-slide-duplicate-active {
     color: black; /* 선택된 단어는 블랙 */
-    font-weight: 900;
+    font-weight: 400;
 }
 
 .wheel-swiper::before,
@@ -201,6 +303,7 @@ body {
 }
 
 .btn {
+    /* max-width: 320px; */
     width: 100%;
     padding: 15px 30px;
     font-size: 18px;
@@ -236,12 +339,15 @@ body {
 
 .result-container {
     background-color: white;
+    width: calc(100% - 40px);
+    max-width: 540px;
+    aspect-ratio: 1080 / 1350;
     padding: 60px 30px;
-    margin-bottom: 40px;
-    min-height: 400px;
     display: flex;
     flex-direction: column;
-    border: 1px solid #cfcfcf; /* 저장 영역 가이드 박스: 얇은 연그레이 */
+    border: 1px solid #cfcfcf;
+    margin: 0 auto;
+    position: relative;
 }
 
 .result-word {
@@ -271,9 +377,24 @@ body {
     overflow: visible;
 }
 
+.result-logo {
+    font-family: "Anton", sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: black;
+    text-align: left;
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    margin: 0;
+    padding: 0;
+    word-break: break-word;
+    overflow: hidden;
+}
+
 .spacer {
     flex-grow: 1;
-    min-height: 280px; /* B와 C 사이 여백을 4줄 더 확대 */
 }
 
 .button-group {
@@ -286,10 +407,14 @@ body {
 .footer-fixed {
     position: fixed;
     left: 0;
-    bottom: 15px; /* 하단에서 15px 띄움 */
+    right: 0;
+    bottom: 15px;
     width: 100%;
-    padding: 0 15px; /* 패딩 15px로 조정 */
+    padding: 0 20px;
     box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    z-index: 50;
 }
 
 /* Mobile optimization */
@@ -303,7 +428,7 @@ body {
     }
 
     .popup-container p {
-        font-size: 14px;
+        font-size: 16px;
     }
 
     .select-group {
