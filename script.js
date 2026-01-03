@@ -197,6 +197,13 @@ function showStep(stepNumber) {
     if (stepNumber >= 1 && logoHeader) {
         logoHeader.classList.add('show');
     }
+    
+    // 휠 페이지(step 1, 2, 3)에서 스크롤 방지
+    if (stepNumber <= 3) {
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = 'auto';
+    }
 }
 
 function saveImage() {
