@@ -301,6 +301,26 @@ function initSwipers() {
     swiperC = buildWheelSwiper('wheelC', C_WORDS);
 }
 
+function updateWheelSlideStyles(swiper) {
+    const slides = swiper.slides;
+    slides.forEach((slide, index) => {
+        const distance = Math.abs(index - swiper.activeIndex);
+        if (distance === 0) {
+            slide.style.opacity = '1';
+            slide.style.transform = 'scale(1)';
+            slide.style.fontSize = '26px';
+        } else if (distance === 1) {
+            slide.style.opacity = '0.85';
+            slide.style.transform = 'scale(0.98)';
+            slide.style.fontSize = '22px';
+        } else {
+            slide.style.opacity = '0.6';
+            slide.style.transform = 'scale(0.95)';
+            slide.style.fontSize = '20px';
+        }
+    });
+}
+
 function buildWheelSwiper(containerId, items) {
     const container = document.getElementById(containerId);
     if (!container) return null;
@@ -315,8 +335,8 @@ function buildWheelSwiper(containerId, items) {
 
     return new Swiper('#' + containerId, {
         direction: 'vertical',
-        slidesPerView: 3,
-        spaceBetween: 36,
+        slidesPerView: 5,
+        spaceBetween: 43,
         centeredSlides: true,
         loop: true,
         speed: 220,
@@ -326,5 +346,16 @@ function buildWheelSwiper(containerId, items) {
         allowTouchMove: true,
         touchReleaseOnEdges: true,
         threshold: 5,
+        on: {
+            slideChange: function() {
+                updateWheelSlideStyles(this);
+                if (navigator.vibrate) {
+                    navigator.vibrate(10);
+                }
+            },
+            init: function() {
+                updateWheelSlideStyles(this);
+            }
+        }
     });
 }

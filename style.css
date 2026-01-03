@@ -209,8 +209,8 @@ body {
 
 .wheel-swiper {
     position: relative;
-    height: 120px; /* 더 컴팩트한 휠 높이 */
-    border: 2px solid black;
+    height: 200px;
+    border: 2px solid rgba(0, 0, 0, 0.63);
     background: white;
     overflow: hidden;
     isolation: isolate;
@@ -226,17 +226,19 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 40px; /* 중앙은 꽉 차고 위아래는 살짝 보이도록 높이 조정 */
+    height: 40px;
     font-family: "Anton", sans-serif;
-    font-size: 24px; /* 폰트 크기 확대 */
+    font-size: 24px;
     font-weight: 400;
-    color: #888; /* 기본은 그레이 */
+    color: #888;
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .wheel-swiper .swiper-slide-active,
 .wheel-swiper .swiper-slide-duplicate-active {
     color: black; /* 선택된 단어는 블랙 */
     font-weight: 400;
+
 }
 
 .wheel-swiper::before,
