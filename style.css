@@ -225,22 +225,34 @@ body {
     isolation: isolate;
 }
 
+#wheelB {
+    border: 1px solid #d6d6d6;
+    background: white;
+}
+
+#wheelC {
+    border: none;
+    background: #f2f2f2;
+}
+
 .wheel-swiper .swiper-wrapper {
     align-items: center;
     position: relative;
-    z-index: 0;
+    z-index: 2; /* keep content above highlights */
 }
 
 .wheel-swiper .swiper-slide {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 40px;
+    height: 50px;
     font-family: "Anton", sans-serif;
     font-size: 24px;
     font-weight: 400;
     color: #888;
     transition: opacity 0.3s ease, transform 0.3s ease;
+    position: relative;
+    z-index: 4; /* above highlight and gradients */
 }
 
 .wheel-swiper .swiper-slide-active,
@@ -248,6 +260,24 @@ body {
     color: black; /* 선택된 단어는 블랙 */
     font-weight: 400;
 
+}
+
+#wheelB {
+    position: relative;
+}
+
+#wheelB::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 50px;
+    transform: translateY(-50%);
+    background: #f5f5f5;
+    border-radius: 0;
+    pointer-events: none;
+    z-index: 0; /* behind gradients and slides */
 }
 
 .wheel-swiper::before,
