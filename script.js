@@ -209,6 +209,10 @@ function showStep(stepNumber) {
 function saveImage() {
     const resultContainer = document.getElementById('resultContainer');
     
+    // 다운로드 시 border 제거
+    const originalBorder = resultContainer.style.border;
+    resultContainer.style.border = 'none';
+    
     html2canvas(resultContainer, {
         backgroundColor: '#ffffff',
         scale: 2,
@@ -216,6 +220,8 @@ function saveImage() {
         useCORS: true,
         allowTaint: true
     }).then(canvas => {
+        // 이미지 저장 후 border 복구
+        resultContainer.style.border = originalBorder;
         canvas.toBlob(blob => {
             const timestamp = new Date().getTime();
             const filename = `fragment_${timestamp}.png`;
@@ -247,6 +253,7 @@ function saveImage() {
         }, 'image/png');
     }).catch(error => {
         console.error('이미지 생성 중 오류:', error);
+        resultContainer.style.border = originalBorder;
         alert('이미지 저장 중 오류가 발생했습니다.');
     });
 }
