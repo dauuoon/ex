@@ -262,11 +262,11 @@ body {
 
 }
 
-#wheelB {
+#wheelB, #wheelC {
     position: relative;
 }
 
-#wheelB::after {
+#wheelB::after{
     content: '';
     position: absolute;
     left: 0;
@@ -275,6 +275,20 @@ body {
     height: 50px;
     transform: translateY(-50%);
     background: #f5f5f5;
+    border-radius: 0;
+    pointer-events: none;
+    z-index: 0; /* behind gradients and slides */
+}
+
+#wheelC::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 50px;
+    transform: translateY(-50%);
+    background: #dfdfdf;
     border-radius: 0;
     pointer-events: none;
     z-index: 0; /* behind gradients and slides */
