@@ -10,27 +10,29 @@ function showPopup(message, options = {}) {
     const actionBtn = document.getElementById('popupAction');
 
     messageElement.innerHTML = message;
-    overlay.classList.add('show');
+                if (navigator.canShare) {
+                    const file = new File([blob], filename, { type: 'image/png' });
+                    const shareData = {
+                        files: [file],
+                        title: 'LINGUISTIC POLES',
+                        text: '나만의 언어 조각'
+                    };
 
-    if (options.actionLabel && typeof options.onAction === 'function') {
-        actionBtn.textContent = options.actionLabel;
-        actionBtn.style.display = 'inline-block';
-        actionBtn.onclick = () => {
-            options.onAction();
-            hidePopup();
-        };
-    } else {
-        actionBtn.style.display = 'none';
-        actionBtn.onclick = null;
-    }
-
-    const duration = options.duration ?? 3000;
-    if (duration > 0) {
-        setTimeout(() => {
-            hidePopup();
-        }, duration);
-    }
-}
+                    if (navigator.canShare(shareData)) {
+                        navigator
+                            .share(shareData)
+                            .then(() => {
+                                showToast('이미지가 앨범에 저장되었습니다.');
+                            })
+                            .catch(error => {
+                                if (error.name !== 'AbortError') {
+                                    console.log('공유 실패, 다운로드로 전환');
+                                    downloadImage(blob, filename);
+                                }
+                            });
+                        return;
+                    }
+                }
 
 function hidePopup() {
     const overlay = document.getElementById('popupOverlay');
@@ -77,6 +79,17 @@ function goToStep2() {
     showStep(2);
 }
 
+
+    function showToast(message) {
+        const el = document.getElementById('toast');
+        if (!el) return;
+        el.textContent = message;
+        el.classList.add('show');
+        clearTimeout(window.__toastTimer);
+        window.__toastTimer = setTimeout(() => {
+            el.classList.remove('show');
+        }, 2200);
+    }
 function goToStep3() {
     if (!swiperB) {
         alert('로딩 중입니다. 잠시 후 다시 시도해주세요.');
@@ -254,9 +267,13 @@ function saveImage() {
                 
                 // 공유 가능한지 확인
                 if (navigator.canShare(shareData)) {
-                    navigator.share(shareData)
+                    navigator
+                        .share(shareData)
+                        .then(() => {
+                            showToast('이미지가 앨범에 저장되었습니다.');
+                        })
                         .catch(error => {
-                            // 공유 취소 시 폴백
+                            // 공유 취소 시 폴백 제외, 기타 에러만 처리
                             if (error.name !== 'AbortError') {
                                 console.log('공유 실패, 다운로드로 전환');
                                 downloadImage(blob, filename);
@@ -286,6 +303,17 @@ function downloadImage(blob, filename) {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
+}
+
+function showToast(message) {
+    const el = document.getElementById('toast');
+    if (!el) return;
+    el.textContent = message;
+    el.classList.add('show');
+    clearTimeout(window.__toastTimer);
+    window.__toastTimer = setTimeout(() => {
+        el.classList.remove('show');
+    }, 2200);
 }
 
 function reset() {
