@@ -327,6 +327,11 @@ function reset() {
 
 window.addEventListener('load', function() {
     setTimeout(() => {
+        // 스플래시 자동 페이드아웃 및 1단계 진입
+        const landing = document.getElementById('landingPage');
+        if (landing) landing.classList.add('fade-out');
+        showStep(1);
+
         showPopup(
             '<span style="font-weight: 600;">당신이 세 개의 기둥(A-B-C)에서<br>가장 먼저 발견했거나, 우연히 읽히는 단어를<br>하나씩 선택해보세요.</span><br><span style="font-size: 14px; font-weight: 100; color: #555; line-height: 1.3; display: block; margin-top: 12px;">From the three columns(A-B-C),<br>select one word from each —<br>the word you notice first,<br>or the one that happens to be read.</span>',
             { 
