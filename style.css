@@ -225,11 +225,8 @@ body {
     isolation: isolate;
 }
 
-#wheelB {
-    border: 1px solid #d6d6d6;
-    background: white;
-}
-
+#wheelA,
+#wheelB,
 #wheelC {
     border: none;
     background: #f2f2f2;
@@ -266,7 +263,8 @@ body {
     position: relative;
 }
 
-#wheelB::after{
+#wheelA::after,
+#wheelB::after {
     content: '';
     position: absolute;
     left: 0;
@@ -274,21 +272,7 @@ body {
     top: 50%;
     height: 50px;
     transform: translateY(-50%);
-    background: #f5f5f5;
-    border-radius: 0;
-    pointer-events: none;
-    z-index: 0; /* behind gradients and slides */
-}
-
-#wheelC::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 50%;
-    height: 50px;
-    transform: translateY(-50%);
-    background: #dfdfdf;
+    background: transparent;
     border-radius: 0;
     pointer-events: none;
     z-index: 0; /* behind gradients and slides */
