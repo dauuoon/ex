@@ -259,7 +259,9 @@ body {
 
 }
 
-#wheelB, #wheelC {
+#wheelA,
+#wheelB,
+#wheelC {
     position: relative;
 }
 
