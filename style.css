@@ -265,21 +265,6 @@ body {
     position: relative;
 }
 
-#wheelA::after,
-#wheelB::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 50%;
-    height: 50px;
-    transform: translateY(-50%);
-    background: transparent;
-    border-radius: 0;
-    pointer-events: none;
-    z-index: 0; /* behind gradients and slides */
-}
-
 .wheel-swiper::before,
 .wheel-swiper::after {
     content: '';

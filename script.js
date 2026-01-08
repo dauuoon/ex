@@ -44,7 +44,23 @@ function hidePopup() {
 
 document.addEventListener('DOMContentLoaded', function() {
     const overlay = document.getElementById('popupOverlay');
-    overlay.addEventListener('click', hidePopup);
+    const popupContainer = overlay.querySelector('.popup-container');
+    
+    // 오버레이 클릭 시 팝업만 닫고 배경 클릭은 무시
+    overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) {
+            // 배경 클릭은 무시 (아무 동작 안 함)
+            return;
+        }
+    });
+    
+    // 팝업 컨테이너 내부 클릭은 전파 중단
+    if (popupContainer) {
+        popupContainer.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+    }
+    
     initSwipers();
 });
 
