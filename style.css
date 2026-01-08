@@ -154,6 +154,17 @@ body {
     line-height: 1.6;
     color: black;
     margin: 0;
+    /* 단어 단위 줄바꿈: 한국어/영문 혼용 최적화 */
+    white-space: normal;
+    word-break: keep-all;      /* 한글은 음절 단위로 끊기지 않도록 */
+    overflow-wrap: break-word; /* 긴 영문 단어는 단어 경계에서 줄바꿈 */
+}
+
+/* 팝업 메시지에 명시적으로 동일 규칙 적용 */
+#popupMessage {
+    white-space: normal;
+    word-break: keep-all;
+    overflow-wrap: break-word;
 }
 
 .popup-actions {
