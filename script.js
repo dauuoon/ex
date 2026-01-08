@@ -4,35 +4,67 @@ let selectedWords = {
     C: ''
 };
 
+// 초기화 상태 플래그
+let __initialized = false;
+let __introShown = false;
+
+function ensureInitialized() {
+    if (__initialized) return;
+    __initialized = true;
+    const landing = document.getElementById('landingPage');
+    if (landing) landing.classList.add('fade-out');
+    showStep(1);
+    // 팝업은 한 번만 보여줌
+    if (!__introShown) {
+        __introShown = true;
+        safeShowIntroPopup();
+    }
+}
+
+function safeShowIntroPopup() {
+    const overlay = document.getElementById('popupOverlay');
+    const msg = document.getElementById('popupMessage');
+    const btn = document.getElementById('popupAction');
+    if (!overlay || !msg || !btn) return;
+    showPopup(
+        '<span style="font-weight: 600;">당신이 세 개의 기둥(A-B-C)에서<br>가장 먼저 발견했거나, 우연히 읽히는 단어를<br>하나씩 선택해보세요.</span><br><span style="font-size: 14px; font-weight: 100; color: #555; line-height: 1.3; display: block; margin-top: 12px;">From the three columns(A-B-C),<br>select one word from each —<br>the word you notice first,<br>or the one that happens to be read.</span>',
+        { 
+            actionLabel: '확인', 
+            onAction: () => {
+                showStep(1);
+            },
+            duration: 0 
+        }
+    );
+}
+
 function showPopup(message, options = {}) {
     const overlay = document.getElementById('popupOverlay');
     const messageElement = document.getElementById('popupMessage');
     const actionBtn = document.getElementById('popupAction');
 
     messageElement.innerHTML = message;
-                if (navigator.canShare) {
-                    const file = new File([blob], filename, { type: 'image/png' });
-                    const shareData = {
-                        files: [file],
-                        title: 'LINGUISTIC POLES',
-                        text: '나만의 언어 조각'
-                    };
+    overlay.classList.add('show');
 
-                    if (navigator.canShare(shareData)) {
-                        navigator
-                            .share(shareData)
-                            .then(() => {
-                                showToast('이미지가 앨범에 저장되었습니다.');
-                            })
-                            .catch(error => {
-                                if (error.name !== 'AbortError') {
-                                    console.log('공유 실패, 다운로드로 전환');
-                                    downloadImage(blob, filename);
-                                }
-                            });
-                        return;
-                    }
-                }
+    if (options.actionLabel && typeof options.onAction === 'function') {
+        actionBtn.textContent = options.actionLabel;
+        actionBtn.style.display = 'inline-block';
+        actionBtn.onclick = () => {
+            options.onAction();
+            hidePopup();
+        };
+    } else {
+        actionBtn.style.display = 'none';
+        actionBtn.onclick = null;
+    }
+
+    const duration = options.duration ?? 3000;
+    if (duration > 0) {
+        setTimeout(() => {
+            hidePopup();
+        }, duration);
+    }
+}
 
 function hidePopup() {
     const overlay = document.getElementById('popupOverlay');
@@ -64,6 +96,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     initSwipers();
+
+    // 유저 첫 상호작용 시 강제 초기화 (iOS 일부 환경 대비)
+    const onceInit = () => ensureInitialized();
+    window.addEventListener('touchstart', onceInit, { once: true, passive: true });
+    window.addEventListener('click', onceInit, { once: true });
 });
 
 function goToStep1() {
@@ -80,16 +117,6 @@ function goToStep2() {
 }
 
 
-    function showToast(message) {
-        const el = document.getElementById('toast');
-        if (!el) return;
-        el.textContent = message;
-        el.classList.add('show');
-        clearTimeout(window.__toastTimer);
-        window.__toastTimer = setTimeout(() => {
-            el.classList.remove('show');
-        }, 2200);
-    }
 function goToStep3() {
     if (!swiperB) {
         alert('로딩 중입니다. 잠시 후 다시 시도해주세요.');
@@ -326,23 +353,10 @@ function reset() {
 }
 
 window.addEventListener('load', function() {
-    setTimeout(() => {
-        // 스플래시 자동 페이드아웃 및 1단계 진입
-        const landing = document.getElementById('landingPage');
-        if (landing) landing.classList.add('fade-out');
-        showStep(1);
-
-        showPopup(
-            '<span style="font-weight: 600;">당신이 세 개의 기둥(A-B-C)에서<br>가장 먼저 발견했거나, 우연히 읽히는 단어를<br>하나씩 선택해보세요.</span><br><span style="font-size: 14px; font-weight: 100; color: #555; line-height: 1.3; display: block; margin-top: 12px;">From the three columns(A-B-C),<br>select one word from each —<br>the word you notice first,<br>or the one that happens to be read.</span>',
-            { 
-                actionLabel: '확인', 
-                onAction: () => {
-                    showStep(1);
-                },
-                duration: 0 
-            }
-        );
-    }, 2500);
+    // 기본 2.5초 후 초기화
+    setTimeout(ensureInitialized, 2500);
+    // 백업 5초 시점에도 한 번 더 시도 (load 미호출/지연 대비)
+    setTimeout(ensureInitialized, 5000);
 });
 
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwE4d-RHW3Ji5QXzJbRmnhxuW-D2pi-UHUvN01U2anfDVO2hwIuUmZpcJfD4_gpmqBQ/exec';
