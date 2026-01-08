@@ -148,6 +148,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const onceInit = () => ensureInitialized();
     window.addEventListener('touchstart', onceInit, { once: true, passive: true });
     window.addEventListener('click', onceInit, { once: true });
+
+    // 기기별 저장 버튼 라벨 설정
+    setSaveButtonLabel();
 });
 
 function goToStep1() {
@@ -330,34 +333,25 @@ function saveImage() {
             const timestamp = new Date().getTime();
             const filename = `fragment_${timestamp}.png`;
             
-            // Web Share API 지원 여부 확인 (모바일 우선)
-            if (navigator.share && navigator.canShare) {
+            // iOS에서만 Web Share API 사용, 그 외는 직접 다운로드
+            if (__isIOS && navigator.share && navigator.canShare) {
                 const file = new File([blob], filename, { type: 'image/png' });
-                const shareData = {
-                    files: [file],
-                    title: 'LINGUISTIC POLES',
-                    text: '나만의 언어 조각'
-                };
-                
-                // 공유 가능한지 확인
+                const shareData = { files: [file], title: 'LINGUISTIC POLES', text: '나만의 언어 조각' };
                 if (navigator.canShare(shareData)) {
-                    navigator
-                        .share(shareData)
+                    navigator.share(shareData)
                         .then(() => {
                             showToast('이미지가 앨범에 저장되었습니다.');
                         })
                         .catch(error => {
-                            // 공유 취소 시 폴백 제외, 기타 에러만 처리
                             if (error.name !== 'AbortError') {
-                                console.log('공유 실패, 다운로드로 전환');
                                 downloadImage(blob, filename);
                             }
                         });
                     return;
                 }
             }
-            
-            // Web Share API 미지원 시 다운로드
+
+            // iOS 공유 미지원/실패 또는 iOS가 아닌 경우: 직접 다운로드
             downloadImage(blob, filename);
         }, 'image/png');
     }).catch(error => {
@@ -377,6 +371,13 @@ function downloadImage(blob, filename) {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
+
+    // 안내 토스트: 플랫폼에 맞는 메시지
+    if (__isIOS) {
+        showToast('이미지가 기기에 저장되었습니다. 파일 앱에서 확인하세요.');
+    } else {
+        showToast('이미지가 기기에 저장되었습니다. 갤러리 > 다운로드에서 확인하세요.');
+    }
 }
 
 function showToast(message) {
@@ -388,6 +389,12 @@ function showToast(message) {
     window.__toastTimer = setTimeout(() => {
         el.classList.remove('show');
     }, 2200);
+}
+
+function setSaveButtonLabel() {
+    const btn = document.getElementById('saveBtn');
+    if (!btn) return;
+    btn.textContent = __isIOS ? '앨범에 저장' : '기기에 저장';
 }
 
 function reset() {
