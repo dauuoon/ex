@@ -7,6 +7,53 @@ let selectedWords = {
 // 초기화 상태 플래그
 let __initialized = false;
 let __introShown = false;
+const __isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+let hapticAudioCtx = null;
+let __lastHapticAt = 0;
+
+function hapticFeedback() {
+    try {
+        // Android 등 지원 기기: 네이티브 진동 우선
+        if (navigator.vibrate) {
+            navigator.vibrate(10);
+            return;
+        }
+        // iOS Safari: Vibration 미지원 → 짧은 클릭 사운드로 대체
+        if (!__isIOS) return;
+
+        const now = Date.now();
+        if (now - __lastHapticAt < 70) return; // 과도한 재생 방지
+        __lastHapticAt = now;
+
+        if (!hapticAudioCtx) {
+            const Ctx = window.AudioContext || window.webkitAudioContext;
+            if (!Ctx) return;
+            hapticAudioCtx = new Ctx();
+        }
+        if (hapticAudioCtx.state === 'suspended') {
+            hapticAudioCtx.resume().catch(() => {});
+        }
+
+        const ctx = hapticAudioCtx;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const t = ctx.currentTime;
+
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(800, t);
+
+        gain.gain.setValueAtTime(0.0001, t);
+        gain.gain.exponentialRampToValueAtTime(0.08, t + 0.005);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.04);
+
+        osc.connect(gain).connect(ctx.destination);
+        osc.start(t);
+        osc.stop(t + 0.05);
+    } catch (e) {
+        // 무시: 오디오 차단 등
+    }
+}
 
 function ensureInitialized() {
     if (__initialized) return;
@@ -440,9 +487,7 @@ function buildWheelSwiper(containerId, items) {
         on: {
             slideChange: function() {
                 updateWheelSlideStyles(this);
-                if (navigator.vibrate) {
-                    navigator.vibrate(10);
-                }
+                hapticFeedback();
             },
             init: function() {
                 updateWheelSlideStyles(this);
