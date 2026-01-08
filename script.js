@@ -238,24 +238,40 @@ function saveImage() {
     }).then(canvas => {
         // 이미지 저장 후 border 복구
         resultContainer.style.border = originalBorder;
-        canvas.toBlob(blob => {
-            const timestamp = new Date().getTime();
-            const filename = `fragment_${timestamp}.png`;
-            const isiOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-            if (isiOS) {
-                const reader = new FileReader();
-                reader.onload = () => {
-                    const link = document.createElement('a');
-                    link.download = filename;
-                    link.href = reader.result;
-                    link.style.display = 'none';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                };
-                reader.readAsDataURL(blob);
-            } else {
+        
+        // 모바일 환경에서 앨범에 저장하기 위한 처리
+        const isiOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+        const isAndroid = /Android/i.test(navigator.userAgent);
+        
+        if (isiOS || isAndroid) {
+            // 모바일: 이미지를 새 탭에서 열어 사용자가 직접 저장할 수 있도록
+            const imageDataUrl = canvas.toDataURL('image/png');
+            const newWindow = window.open();
+            if (newWindow) {
+                newWindow.document.write(`
+                    <html>
+                    <head>
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <style>
+                            body { margin: 0; padding: 20px; text-align: center; font-family: sans-serif; }
+                            img { max-width: 100%; height: auto; }
+                            p { margin-top: 20px; font-size: 14px; color: #666; }
+                        </style>
+                    </head>
+                    <body>
+                        <img src="${imageDataUrl}" />
+                        <p>이미지를 길게 누르고 '사진에 추가' 또는 '이미지 저장'을 선택하세요.</p>
+                        <p>Press and hold the image, then select 'Add to Photos' or 'Save Image'.</p>
+                    </body>
+                    </html>
+                `);
+                newWindow.document.close();
+            }
+        } else {
+            // 데스크톱: 기존 방식으로 다운로드
+            canvas.toBlob(blob => {
+                const timestamp = new Date().getTime();
+                const filename = `fragment_${timestamp}.png`;
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
                 link.download = filename;
@@ -265,8 +281,8 @@ function saveImage() {
                 link.click();
                 document.body.removeChild(link);
                 URL.revokeObjectURL(url);
-            }
-        }, 'image/png');
+            }, 'image/png');
+        }
     }).catch(error => {
         console.error('이미지 생성 중 오류:', error);
         resultContainer.style.border = originalBorder;
