@@ -376,7 +376,7 @@ function downloadImage(blob, filename) {
     if (__isIOS) {
         showToast('이미지가 기기에 저장되었습니다. 파일 앱에서 확인하세요.');
     } else {
-        showToast('이미지가 기기에 저장되었습니다. 갤러리 > 다운로드에서 확인하세요.');
+        showToast('이미지가 기기에 저장되었습니다.');
     }
 }
 
